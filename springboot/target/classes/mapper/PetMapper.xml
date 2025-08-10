@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.exam.mapper.PetMapper">
+
+    <insert id="insert" parameterType="org.exam.entity.Pet">
+        insert into `pet`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="shopId != null">shop_id,</if>
+            <if test="typeId != null">type_id,</if>
+            <if test="name != null">name,</if>
+            <if test="sex != null">sex,</if>
+            <if test="img != null">img,</if>
+            <if test="price != null">price,</if>
+            <if test="introduce != null">introduce,</if>
+            <if test="content != null">content,</if>
+            <if test="status != null">status,</if>
+            <if test="recommend != null">recommend,</if>
+        </trim>
+            values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="shopId != null">#{shopId},</if>
+            <if test="typeId != null">#{typeId},</if>
+            <if test="name != null">#{name},</if>
+            <if test="sex != null">#{sex},</if>
+            <if test="img != null">#{img},</if>
+            <if test="price != null">#{price},</if>
+            <if test="introduce != null">#{introduce},</if>
+            <if test="content != null">#{content},</if>
+            <if test="status != null">#{status},</if>
+            <if test="recommend != null">#{recommend},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="org.exam.entity.Pet">
+        update `pet`
+        <set>
+            <if test="shopId != null">shop_id=#{shopId},</if>
+            <if test="typeId != null">type_id=#{typeId},</if>
+            <if test="name != null">name=#{name},</if>
+            <if test="sex != null">sex=#{sex},</if>
+            <if test="img != null">img=#{img},</if>
+            <if test="price != null">price=#{price},</if>
+            <if test="introduce != null">introduce=#{introduce},</if>
+            <if test="content != null">content=#{content},</if>
+            <if test="status != null">status=#{status},</if>
+            <if test="recommend != null">recommend=#{recommend},</if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <select id="selectAll" resultType="org.exam.entity.Pet">
+        select pet.*, pet_shop.name as shopName, pet_type.name as typeName from `pet`
+        left join pet_shop on pet.shop_id = pet_shop.id
+        left join pet_type on pet.type_id = pet_type.id
+
+        <where>
+            <if test="name!=null">and pet.name like concat('%',#{name},'%')</if>
+            <if test="shopId!=null">and pet.shop_id = #{shopId}</if>
+            <if test="recommend!=null">and pet.recommend = #{recommend}</if>
+            <if test="status!=null">and pet.status = #{status}</if>
+            <if test="id!=null">and pet.id = #{id}</if>
+            <if test="typeName!=''">and pet_type.name = #{typeName}</if>
+
+        </where>
+    </select>
+
+</mapper>

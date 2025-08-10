@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.exam.mapper.GoodsMapper">
+
+    <insert id="insert" parameterType="org.exam.entity.Goods">
+        insert into `goods`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="shopId != null">shop_id,</if>
+            <if test="typeId != null">type_id,</if>
+            <if test="name != null">name,</if>
+            <if test="img != null">img,</if>
+            <if test="status != null">status,</if>
+            <if test="price != null">price,</if>
+            <if test="introduce != null">introduce,</if>
+        </trim>
+            values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="shopId != null">#{shopId},</if>
+            <if test="typeId != null">#{typeId},</if>
+            <if test="name != null">#{name},</if>
+            <if test="img != null">#{img},</if>
+            <if test="status != null">#{status},</if>
+            <if test="price != null">#{price},</if>
+            <if test="introduce != null">#{introduce},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="org.exam.entity.Goods">
+        update `goods`
+        <set>
+            <if test="shopId != null">shop_id=#{shopId},</if>
+            <if test="typeId != null">type_id=#{typeId},</if>
+            <if test="name != null">name=#{name},</if>
+            <if test="img != null">img=#{img},</if>
+            <if test="status != null">status=#{status},</if>
+            <if test="price != null">price=#{price},</if>
+            <if test="introduce != null">introduce=#{introduce},</if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <select id="selectAll" resultType="org.exam.entity.Goods">
+        select goods.*, pet_shop.name as shopName, goods_type.name as typeName from `goods`
+        left join pet_shop on goods.shop_id = pet_shop.id
+        left join goods_type on goods.type_id = goods_type.id
+
+        <where>
+            <if test="name!=null">and goods.name like concat('%',#{name},'%')</if>
+            <if test="shopId!=null">and goods.shop_id = #{shopId}</if>
+            <if test="status!=null">and goods.status = #{status}</if>
+            <if test="typeName!=''">and goods_type.name = #{typeName}</if>
+
+        </where>
+    </select>
+
+</mapper>

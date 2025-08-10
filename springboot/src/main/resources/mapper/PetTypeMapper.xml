@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.exam.mapper.PetTypeMapper">
+
+    <insert id="insert" parameterType="org.exam.entity.PetType">
+        INSERT INTO `pet_type`(name)
+        VALUES (#{name})
+    </insert>
+
+    <update id="updateById" parameterType="org.exam.entity.PetType">
+        update pet_type set name=#{name}
+        where id=#{id}
+    </update>
+
+    <select id="selectAll" resultType="org.exam.entity.PetType">
+        select * from pet_type
+        <where>
+            <if test="name!=null"> name like concat('%',#{name},'%')</if>
+        </where>
+    </select>
+
+</mapper>

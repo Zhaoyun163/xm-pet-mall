@@ -1,0 +1,19 @@
+body{
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    color: #000000;
+
+}
+
+.card {
+    background-color: #fff;
+    padding: 5px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, .1);
+    border-radius: 5px;
+
+}
+
+.el-tooltip__trigger {
+    outline: none !important;
+}

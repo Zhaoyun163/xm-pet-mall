@@ -1,0 +1,122 @@
+1,导入
+import '@wangeditor/editor/dist/css/style.css' // 引入样式
+import {onBeforeUnmount,ref,shallowRef} from "vue";
+import {Editor,Toolbar } from '@wangeditor/editor-for-vue'
+
+2，添加div
+<div style="border-bottom: 1px solid #e9e9e9; width: 100%;">
+          <Toolbar
+              style="border-bottom: 1px solid #e9e9e9;"
+              :editor="editorRef"
+              :mode="mode"
+          />
+          <Editor
+              style="height: 500px;overflow-y:hidden;"
+              v-model="data.form.content"
+              :mode="mode"
+              :defaultConfig="editorConfig"
+              @onCreated="handleCreated"
+          />
+        </div>
+3,初始化编辑器
+//wangeditor5 初始化开始
+const baseUrl = 'https://localhost:9090'
+const editorRef = shallowRef()
+const mode = 'default'
+const editorConfig={MENU_CONF:{}}
+//图片上传配置
+editorConfig.MENU_CONF['uploadImage']={
+  server:baseUrl+'files/wang/upload',  //服务端图片上传接口
+  fiedldName:'file'  //服务端图片上传接口参数名
+}
+//组件销毁时，清除编辑器实例
+onBeforeUnmount(() => {
+  const editor = editorRef.value
+  if(editor == null) return
+  editor.destroy()
+})
+//记录editor事件 重要
+const handleCreated = (editor) =>{
+  editorRef.value = editor
+}
+//wangeditor5 初始化结束
+
+4,查询按钮
+<el-button type="primary" @click="view(scope.row.content)">查看内容</el-button>
+
+5,查看内容弹窗
+
+<el-dialog title="文章内容" v-model="data.viewVisible" width="50%" :close-on-click-modal="false">
+  <div class="editor-content-view" style="padding:20px" v-html="data.content"></div>
+  <template #footer>
+    <sapn class="dialog-footer">
+      <el-button @click="data.viewVisible = false">关 闭</el-button>
+    </sapn>
+  </template>
+</el-dialog>
+
+data:{
+  content:null,
+  viewVisible:false
+}
+
+const view = (content) => {
+  data.content = content
+  data.viewVisible = true
+}
+
+6, 接口
+    //wangeditor上传接口
+    @PostMapping("/wang/upload")
+    public Map<String, Object> wangEditorUpload(MultipartFile file){
+        String originalFilename = file.getOriginalFilename();//获取文件名
+        if(!FileUtil.isDirectory(filePath)){  //判断文件夹是否存在，不存在则创建
+            FileUtil.mkdir(filePath);  //创建文件路径
+        }
+        String fileName=System.currentTimeMillis()+"_"+originalFilename;  //重命名加上时间戳+文件名
+        String realPath=filePath+fileName;  //拼接文件完整路径
+        try {
+            FileUtil.writeBytes(file.getBytes(),realPath); //写入文件
+        } catch (IOException e) {
+            throw new CustomException("500","文件上传失败");
+        }
+        String url="http://localhost:9090/files/download/"+fileName;  //拼接文件下载路径
+        //wangeditor上传成功 需要返回数据
+
+        Map<String, Object> resMap = new HashMap<>();
+        List<Map<String, Object>> list = new ArrayList<>();
+        Map<String, Object> urMap = new HashMap<>();
+        urMap.put("url", url);
+        list.add(urMap);
+        resMap.put("errno", 0);
+        resMap.put("data", list);
+        return resMap;
+    }
+
+
+7.
+表格查看
+        <el-table-column label="详情">
+          <template #default="scope">
+            <el-button type="text" @click="view(scope.row.content)">查看详情</el-button>
+          </template>
+        </el-table-column>
+
+弹窗样式
+<el-dialog title="文章内容" v-model="data.viewVisible" width="50%" :close-on-click-modal="false">
+      <div class="editor-content-view" style="padding:20px" v-html="data.content"></div>
+      <template #footer>
+        <sapn class="dialog-footer">
+          <el-button @click="data.viewVisible = false">关 闭</el-button>
+        </sapn>
+      </template>
+    </el-dialog>
+
+方法
+const view = (content) => {
+  data.content = content
+  data.viewVisible = true
+}
+
+
+

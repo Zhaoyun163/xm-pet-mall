@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.exam.mapper.ShoppingCartMapper">
+
+    <insert id="insert" parameterType="org.exam.entity.ShoppingCart">
+        insert into `shopping_cart`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="goodsId != null">goods_id,</if>
+            <if test="typeId != null">type_id,</if>
+            <if test="quantity != null">quantity,</if>
+            <if test="addedAt != null">added_at,</if>
+
+        </trim>
+            values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="goodsId != null">#{goodsId},</if>
+            <if test="typeId != null">#{typeId},</if>
+            <if test="quantity != null">#{quantity},</if>
+            <if test="addedAt != null">#{addedAt},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="org.exam.entity.ShoppingCart">
+        update `shopping_cart`
+        <set>
+            <if test="userId != null">user_id=#{userId},</if>
+            <if test="goodsId != null">goods_id=#{goodsId},</if>
+            <if test="typeId != null">type_id=#{typeId},</if>
+            <if test="quantity != null">quantity=#{quantity},</if>
+            <if test="addedAt != null">added_at=#{addedAt},</if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <select id="selectAll" resultType="org.exam.entity.ShoppingCart">
+        select shopping_cart.*, goods.name as goodsName, goods_type.name as typeName ,goods.img as img ,
+               goods.shop_id as shopId , pet_shop.name as shopName ,goods.price as price from `shopping_cart`
+        left join goods on shopping_cart.goods_id = goods.id
+        left join goods_type on shopping_cart.type_id = goods_type.id
+        left join pet_shop on goods.shop_id = pet_shop.id
+
+        <where>
+            <if test="userId!=null">and shopping_cart.user_id = #{userId}</if>
+            <if test="goodsName!=null">and goods.name like concat('%',#{goodsName},'%')</if>
+            <if test="shopName!=null">and pet_shop.name like concat('%',#{shopName},'%')</if>
+        </where>
+        ORDER BY shopping_cart.added_at DESC
+    </select>
+
+</mapper>

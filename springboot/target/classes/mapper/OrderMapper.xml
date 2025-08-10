@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.exam.mapper.OrderMapper">
+
+    <insert id="insert" parameterType="org.exam.entity.Order">
+        INSERT INTO `order`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="orderNo != null">order_no,</if>
+            <if test="name != null">name,</if>
+            <if test="img != null">img,</if>
+            <if test="price != null">price,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="shopId != null">shop_id,</if>
+            <if test="number != null">number,</if>
+            <if test="status != null">status,</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="orderNo != null">#{orderNo},</if>
+            <if test="name != null">#{name},</if>
+            <if test="img != null">#{img},</if>
+            <if test="price != null">#{price},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="shopId != null">#{shopId},</if>
+            <if test="number != null">#{number},</if>
+            <if test="status != null">#{status},</if>
+        </trim>
+    </insert>
+
+    <!-- 根据ID更新订单 -->
+    <update id="updateById" parameterType="org.exam.entity.Order">
+        UPDATE `order`
+        <set>
+            <if test="orderNo != null">order_no = #{orderNo},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="img != null">img = #{img},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="shopId != null">shop_id = #{shopId},</if>
+            <if test="number != null">number = #{number},</if>
+            <if test="status != null">status = #{status},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectAll" resultType="org.exam.entity.Order">
+        SELECT `order`.*, pet_shop.name AS shopName, user.name AS userName FROM `order`
+        LEFT JOIN pet_shop ON order.shop_id = pet_shop.id
+        LEFT JOIN user ON order.user_id = user.id
+
+        <where>
+            <if test="name != null">AND order.name LIKE CONCAT('%', #{name}, '%')</if>
+            <if test="shopId != null">AND order.shop_id = #{shopId}</if>
+            <if test="userId != null">AND order.user_id = #{userId}</if>
+            <if test="status != null">AND order.status = #{status}</if>
+            <if test="id != null">AND order.id = #{id}</if>
+            <if test="shopName != null">AND pet_shop.name = #{shopName}</if>
+        </where>
+        order by id desc
+    </select>
+
+</mapper>

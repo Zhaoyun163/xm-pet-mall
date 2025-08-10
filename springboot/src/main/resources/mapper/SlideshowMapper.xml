@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.exam.mapper.SlideshowMapper">
+
+    <insert id="insert" parameterType="org.exam.entity.Slideshow">
+        insert into `slideshow`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id!=null">id,</if>
+            <if test="petId!=null">pet_id,</if>
+            <if test="img!=null">img,</if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id!=null">#{id},</if>
+            <if test="petId!=null">#{petId},</if>
+            <if test="img!=null">#{img},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="org.exam.entity.Slideshow">
+        update `slideshow`
+        <set>
+            <if test="petId!=null">pet_id=#{petId},</if>
+            <if test="img!=null">img=#{img},</if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <select id="selectAll" resultType="org.exam.entity.Slideshow">
+        select slideshow.*, pet.name as petName 
+        from slideshow
+        left join pet on slideshow.pet_id = pet.id
+        <where>
+            <if test="petName!=null"> pet.name like concat('%',#{petName},'%')</if>
+        </where>
+    </select>
+
+</mapper>
